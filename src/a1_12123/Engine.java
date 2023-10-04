@@ -1,20 +1,26 @@
 package engine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Vector;
 
 public class Engine {
-    private Vector<Doc> docs;
+    private Vector<Doc> docs = new Vector<>();
 
-    public int loadDocs(String dirname)
-    {
+    public int loadDocs(String dirname) throws FileNotFoundException {
         File dir = new File(dirname);
         if( dir.list() == null)
             throw new NullPointerException("Directory given is null");
 
-        for( String name : dir.list())
+        for( File file : dir.listFiles())
         {
-            docs.add(new Doc(name));
+            try {
+                docs.add(new Doc(file.getPath()));
+            } catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
         }
 
         return docs.size();
@@ -29,5 +35,31 @@ public class Engine {
         }
 
         return temp;
+    }
+
+    public List<Result> search(Query q)
+    {
+        Vector<Result> results = new Vector<>();
+
+        for (Doc doc : getDocs() ) {
+            Result result = new Result(doc, q.matchAgainst(doc));
+            results.add(result);
+        }
+
+        return results;
+    }
+
+    public String htmlResult(List<Result> results)
+    {
+        StringBuilder html = new StringBuilder();
+
+        html.append(results.get(0).htmlHighlight());
+
+        for (int i = 1; i < results.size(); i++) {
+            html.append("\n");
+            html.append(results.get(i).htmlHighlight());
+        }
+
+        return html.toString();
     }
 }
