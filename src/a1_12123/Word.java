@@ -18,9 +18,9 @@ public class Word
        private String prefix;
        private String text;
        private String suffix;
-       public final Pattern prefixPattern = Pattern.compile("^[^a-zA-Z0-9]+");
-       public final Pattern suffixPattern = Pattern.compile("('s|es|ve|d)*[^a-zA-Z0-9]+$");
-       public final Pattern textPattern = Pattern.compile("[a-zA-Z]+(-[a-zA-Z]+)*");
+       public final Pattern prefixPattern = Pattern.compile("^[^a-zA-Z0-9\\s]*");
+       public final Pattern suffixPattern = Pattern.compile("(('(s|es|ve|d))*[^a-zA-Z0-9\\s]*)$");
+       public final Pattern textPattern = Pattern.compile("^[a-zA-Z]+(-[a-zA-Z]+)*$");
        private Integer index;
        public static Set<String> stopWords = new TreeSet<>();
 
@@ -77,34 +77,35 @@ public class Word
 
        public boolean isKeyword()
        {
-              for( String stopWord : stopWords)
-              {
-                     if( stopWord.equals(toString()))
+                     if( Word.stopWords.contains(this.toString().toLowerCase()))
                      {
-                            return true;
+                            return false;
                      }
-              }
 
-              return false;
+                     if( "".equals(getMatch(this.text, textPattern)))
+                     {
+                            return false;
+                     }
+
+              return true;
        }
 
        public static boolean loadStopWords(String fileName)
        {
               try {
-                     File file = new File("stopwords.txt");
+                     File file = new File(fileName);
                      Scanner reader = new Scanner( file );
 
                      while(reader.hasNextLine())
                      {
-                            stopWords.add(reader.nextLine());
+                            Word.stopWords.add(reader.nextLine());
                      }
 
                      return true;
-
               } catch (FileNotFoundException e)
               {
                      e.printStackTrace();
-                     out.println(fileName + "not found");
+                     out.println(fileName + " not found");
                      return false;
               }
        }
