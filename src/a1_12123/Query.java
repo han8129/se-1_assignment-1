@@ -1,9 +1,9 @@
 package engine;
 
-import java.math.MathContext;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
+
+import static java.util.Collections.sort;
+import static java.util.Comparator.*;
 
 /**
  * keyWord are word that are not stopWords
@@ -26,7 +26,9 @@ public class Query {
        public List<Word> getKeywords()
        {
               List<Word> clone = new ArrayList<>(keywords.size());
-              clone.addAll(keywords);
+              for (Word word : keywords ) {
+                     clone.add(word.clone());
+              }
 
               return clone;
        }
@@ -35,33 +37,34 @@ public class Query {
        {
               List<Match> matches = new Vector<>();
 
-              for (Word keyword: keywords ) {
+              for (Word keyword : keywords )
+              {
                      int freq = 0;
                      Integer firstIndex = null;
 
-                     for (Word word: d.getTitle() )
+                     for (Word word : d.getTitle() )
+                     {
+                            if ( keyword.equals(word) )
+                            {
+                                   freq++;
+
+                                   if (firstIndex == null)
+                                   {
+                                          firstIndex = word.getIndex();
+                                   }
+                            }
+                     }
+
+                     for (Word word: d.getBody() )
                      {
                             if (keyword.equals(word))
                             {
                                    freq++;
-                            }
 
-                            if (firstIndex == null)
-                            {
-                                   firstIndex = word.getIndex();
-                            }
-                     }
-
-                     for (Word word: d.getBody()
-                     ) {
-                            if (keyword.equals(word))
-                            {
-                                   freq++;
-                            }
-
-                            if (firstIndex == null)
-                            {
-                                   firstIndex = word.getIndex();
+                                   if (firstIndex == null)
+                                   {
+                                          firstIndex = word.getIndex();
+                                   }
                             }
                      }
 
@@ -72,6 +75,8 @@ public class Query {
 
                      matches.add( new Match(d, keyword, freq, firstIndex));
               }
+
+              matches.sort( Comparator.naturalOrder() );
 
               return matches;
        }

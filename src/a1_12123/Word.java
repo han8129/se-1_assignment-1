@@ -119,9 +119,11 @@ public class Word
        public boolean equals(Object o)
        {
               try {
-                     return getText().equalsIgnoreCase(((Word) o).getText());
+                     return text.equalsIgnoreCase(((Word) o).getText());
               } catch (IllegalArgumentException e)
               {
+                     out.println();
+                     e.printStackTrace();
                      return false;
               }
        }
@@ -134,7 +136,13 @@ public class Word
 
        public Word clone()
        {
-              return new Word(this.toString());
+              Word clone = new Word(this.toString());
+              if (null != index)
+              {
+                     clone.setIndex(index);
+              }
+
+              return clone;
        }
 
        public String htmlHighlight(String tag) {
