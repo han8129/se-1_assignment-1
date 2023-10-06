@@ -19,7 +19,7 @@ public class Word
        private String text;
        private String suffix;
        public final Pattern prefixPattern = Pattern.compile("^[^a-zA-Z0-9\\s]*");
-       public final Pattern suffixPattern = Pattern.compile("(('(s|es|ve|d))*[^a-zA-Z0-9\\s]*)$");
+       public final Pattern suffixPattern = Pattern.compile("(('(s|es|ve|d)){0,1}[^a-zA-Z0-9\\s]*)$");
        public final Pattern textPattern = Pattern.compile("^[a-zA-Z]+(-[a-zA-Z]+)*$");
        private Integer index;
        public static Set<String> stopWords = new TreeSet<>();
@@ -48,21 +48,52 @@ public class Word
               }
        }
 
-       public static Word createWord( String text )
+       private Word( String text, int index )
        {
-              return new Word(text);
-       }
+              this.prefix = getMatch(text, prefixPattern);
+              this.suffix = getMatch(text,suffixPattern);
 
-       public void setIndex(Integer index) {
+              int textStart = this.prefix.length();
+              int textEnd = text.length() - this.suffix.length();
+
+              String newText = "";
+
+              if ((textEnd - textStart) > 0)
+                     newText = text.substring( textStart ,textEnd );
+
+              String matchNewText = getMatch(newText, textPattern);
+              if( newText.length() != matchNewText.length() )
+              {
+                     this.text = text;
+                     this.prefix = "";
+                     this.suffix = "";
+              } else {
+                     this.text = matchNewText;
+              }
+
               if( index < 0)
                      throw new IndexOutOfBoundsException();
 
               this.index = index;
        }
 
-       public Integer getIndex()
+       public static Word createWord( String text )
        {
-              return index;
+              return new Word(text);
+       }
+
+       public static Word createWord( String text, int index )
+       {
+              return new Word(text, index);
+       }
+
+       public int getIndex()
+       {
+              if ( null == index)
+              {
+                     throw new NullPointerException("Word created with out an index");
+              }
+              return index.intValue();
        }
 
        private String getMatch( String text, Pattern pattern )
@@ -120,6 +151,7 @@ public class Word
        {
               try {
                      return text.equalsIgnoreCase(((Word) o).getText());
+
               } catch (IllegalArgumentException e)
               {
                      out.println();
@@ -136,13 +168,11 @@ public class Word
 
        public Word clone()
        {
-              Word clone = new Word(this.toString());
-              if (null != index)
-              {
-                     clone.setIndex(index);
-              }
+              Word word = (null == index)
+                     ? new Word(toString())
+                     : new Word(toString(), index);
 
-              return clone;
+              return word;
        }
 
        public String htmlHighlight(String tag) {

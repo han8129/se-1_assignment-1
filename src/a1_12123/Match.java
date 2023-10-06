@@ -12,6 +12,9 @@ public class Match implements Comparable<Match>
               this.d = d;
               this.w = w;
               this.freq = freq;
+              if ( firstIndex < 0)
+                     throw new IndexOutOfBoundsException("Index given " + firstIndex);
+
               this.firstIndex = firstIndex;
        }
 
@@ -43,5 +46,10 @@ public class Match implements Comparable<Match>
        public Word getWord()
        {
               return w.clone();
+       }
+
+       @Override public String toString()
+       {
+              return "Doc " + d.getPath() + "| Word " + w.toString() + " at " + firstIndex;
        }
 }

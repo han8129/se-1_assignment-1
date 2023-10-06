@@ -1,30 +1,31 @@
 package engine;
 
+import com.sun.media.sound.InvalidFormatException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InvalidObjectException;
 import java.nio.channels.FileLockInterruptionException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Vector;
+import java.util.*;
 
 public class Doc extends File {
        private List<Word> title;
        private List<Word> body;
 
-       public Doc(String name) throws FileNotFoundException {
+       public Doc(String name) throws FileNotFoundException
+       {
               super(name);
                      if ( ! this.exists() )
                      {
-                            throw new FileNotFoundException();
+                            throw new FileNotFoundException("Path given " + name);
                      }
 
                      Scanner scanner = new Scanner( this );
                      try {
                             this.title = getWord(scanner.nextLine());
                             this.body = getWord(scanner.nextLine());
-                     } catch( NullPointerException e)
+                     } catch( NoSuchElementException e)
                      {
                             e.printStackTrace();
                      }
@@ -34,8 +35,10 @@ public class Doc extends File {
        public Doc clone() {
               try {
                      return new Doc(this.getPath());
-              } catch (FileNotFoundException e) {
-                     throw new RuntimeException(e);
+              } catch (FileNotFoundException e)
+              {
+                     e.printStackTrace();
+                     return null;
               }
        }
 
@@ -49,20 +52,19 @@ public class Doc extends File {
                      if(text.charAt(endIndex) == ' ')
                      {
                             String rawWord = text.substring(beginIndex, endIndex);
-                            Word word = Word.createWord( rawWord );
-                            word.setIndex(beginIndex);
+                            Word word = Word.createWord( rawWord, beginIndex );
                             temp.add(word);
                             beginIndex = endIndex + 1;
                      }
               }
 
-              if(' ' == text.charAt(text.length() - 1))
+              if(endIndex == text.length() - 1)
               {
                      return temp;
               }
 
               String rawWord = text.substring(beginIndex, endIndex);
-              Word lastWord = Word.createWord(rawWord);
+              Word lastWord = Word.createWord(rawWord, beginIndex);
               temp.add(lastWord);
 
               return temp;
@@ -71,9 +73,11 @@ public class Doc extends File {
        public List<Word> getTitle()
        {
               List<Word> clone = new ArrayList<>(title.size());
+
               for (Word word: title ) {
                      clone.add(word.clone());
               }
+
               return clone;
        }
 

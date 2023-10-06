@@ -1,5 +1,7 @@
 package engine;
 
+import com.sun.media.sound.InvalidFormatException;
+
 import javax.crypto.Mac;
 import javax.swing.*;
 import java.io.FileNotFoundException;
@@ -44,11 +46,10 @@ public class Result implements Comparable<Result> {
        public String htmlHighlight()
        {
               StringBuilder html = new StringBuilder();
-              (html).append(htmlHighlight(doc.getTitle(), "u"));
-              html.append("\n");
-              html.append(htmlHighlight(doc.getBody(), "b"));
+              (html).append("<h3>" + htmlHighlight(doc.getTitle(), "u") + "</h3>");
+              html.append("<p>" + htmlHighlight(doc.getBody(), "b") + "</p>");
 
-              return null;
+              return html.toString();
        }
 
        private String htmlHighlight(List<Word> matchAgainst, String htmlTag)
@@ -71,7 +72,7 @@ public class Result implements Comparable<Result> {
 
                      if(! found )
                      {
-                            html.append(word.toString());
+                            html.append( word.toString());
                      }
               }
 
@@ -91,7 +92,7 @@ public class Result implements Comparable<Result> {
 
                      if( ! found )
                      {
-                            html.append(word.toString());
+                            html.append(" " + word.toString());
                      }
               }
 
@@ -101,25 +102,26 @@ public class Result implements Comparable<Result> {
        public int compareTo(Result o) {
               if (matches.size() > o.getMatches().size())
               {
-                     return 1;
+                     return -1;
 
               } else if (matches.size() < o.getMatches().size()) {
-                     return -1;
+                     return 1;
               }
 
               if (getTotalFrequency() > o.getTotalFrequency())
               {
-                     return 1;
-              } else if (getTotalFrequency() < o.getTotalFrequency()) {
                      return -1;
+
+              } else if (getTotalFrequency() < o.getTotalFrequency()) {
+                     return 1;
               }
 
               if (getAverageFirstIndex() < o.getAverageFirstIndex())
               {
-                     return 1;
+                     return -1;
               }
               else if( getAverageFirstIndex() > o.getAverageFirstIndex())
-                     return -1;
+                     return 1;
 
               return 0;
        }

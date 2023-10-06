@@ -2,9 +2,6 @@ package engine;
 
 import java.util.*;
 
-import static java.util.Collections.sort;
-import static java.util.Comparator.*;
-
 /**
  * keyWord are word that are not stopWords
  */
@@ -13,7 +10,8 @@ public class Query {
        public Query(String searchPhrase)
        {
               keywords = new Vector<>();
-              for( String rawWord : searchPhrase.split(" "))
+              for( String rawWord : 
+                     searchPhrase.split(" "))
               {
                      Word word = Word.createWord(rawWord);
                      if( word.isKeyword())
@@ -40,18 +38,24 @@ public class Query {
               for (Word keyword : keywords )
               {
                      int freq = 0;
-                     Integer firstIndex = null;
+                     Integer firstIndex = -1;
 
                      for (Word word : d.getTitle() )
                      {
                             if ( keyword.equals(word) )
                             {
-                                   freq++;
-
-                                   if (firstIndex == null)
+                                   if (freq == 0)
                                    {
-                                          firstIndex = word.getIndex();
+                                          try {
+
+                                                 firstIndex = word.getIndex();
+                                          } catch (NullPointerException e)
+                                          {
+                                                 e.printStackTrace();
+                                          }
                                    }
+
+                                   freq++;
                             }
                      }
 
@@ -59,24 +63,37 @@ public class Query {
                      {
                             if (keyword.equals(word))
                             {
-                                   freq++;
-
-                                   if (firstIndex == null)
+                                   if (freq == 0)
                                    {
-                                          firstIndex = word.getIndex();
+                                          try {
+                                                 firstIndex = word.getIndex();
+                                          } catch (NullPointerException e)
+                                          {
+                                                 e.printStackTrace();
+                                          }
                                    }
+
+                                   freq++;
                             }
                      }
 
-                     if (firstIndex  == null)
+                     if (freq > 0)
                      {
-                            continue;
+                            matches.add( new Match(d, keyword, freq, firstIndex));
                      }
-
-                     matches.add( new Match(d, keyword, freq, firstIndex));
               }
 
-              matches.sort( Comparator.naturalOrder() );
+              if (matches.size() > 1)
+              {
+                     matches.sort( Comparator.naturalOrder() );
+              }
+
+//              if (matches.size() > 0)
+//                     System.out.print("Matches: ");
+//              for (Match match : matches)
+//              {
+//                     System.out.println(match.toString());
+//              }
 
               return matches;
        }

@@ -1,9 +1,11 @@
 package engine;
 
+import com.sun.media.sound.InvalidFormatException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
+
 
 public class Engine {
     private Vector<Doc> docs = new Vector<>();
@@ -17,8 +19,7 @@ public class Engine {
         {
             try {
                 docs.add(new Doc(file.getPath()));
-            } catch (FileNotFoundException e)
-            {
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -39,12 +40,17 @@ public class Engine {
 
     public List<Result> search(Query q)
     {
-        Vector<Result> results = new Vector<>();
+        List<Result> results = new Vector<>();
 
         for (Doc doc : getDocs() ) {
-            Result result = new Result(doc, q.matchAgainst(doc));
-            results.add(result);
+            List<Match> matches = q.matchAgainst(doc);
+            if( 0 < matches.size() )
+            {
+                results.add(new Result(doc, matches));
+            }
         }
+
+        results.sort( Comparator.naturalOrder() );
 
         return results;
     }
