@@ -2,11 +2,13 @@ package engine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         boolean canLoadStopWords = Word.loadStopWords("stopwords2.txt");
         if (canLoadStopWords) {
             System.out.println("Word.loadStopWords(): incorrect return value (expected: false)");
@@ -154,6 +156,22 @@ public class App {
         }
         String html = e.htmlResult(results).trim(); // ranked result in simple HTML format
         String expectedHTML = sc.nextLine();
+
+        FileWriter output = new FileWriter("output.txt");
+        output.write(html);
+        output.close();
+
+        FileWriter expectation = new FileWriter("expectation.txt");
+        expectation.write(expectedHTML);
+        expectation .close();
+
+        for(int i = 0; i < html.length();i++){
+            if(html.charAt(i)!=expectedHTML.charAt(i)){
+                System.out.println(html.charAt(i));
+                System.out.println(expectedHTML.charAt(i));
+                System.out.println(i);
+            }
+        }
         if (!html.equals(expectedHTML)) {
             System.out.println("Engine.htmlResult(): incorrect output");
         }

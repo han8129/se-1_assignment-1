@@ -136,7 +136,6 @@ public class Word
               } catch (FileNotFoundException e)
               {
                      e.printStackTrace();
-                     out.println(fileName + " not found");
                      return false;
               }
        }
@@ -168,16 +167,14 @@ public class Word
 
        public Word clone()
        {
-              Word word = (null == index)
+              return (null == index)
                      ? new Word(toString())
                      : new Word(toString(), index);
-
-              return word;
        }
 
        public String htmlHighlight(String tag) {
-              return  "<" + tag + ">" + prefix
-              + text + suffix + "</" + tag + ">" ;
+              return  prefix + "<" + tag + ">"
+              + text + "</" + tag + ">" + suffix ;
        }
 
        public String getPrefix() {

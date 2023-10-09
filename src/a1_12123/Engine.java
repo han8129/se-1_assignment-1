@@ -2,13 +2,14 @@ package engine;
 
 import com.sun.media.sound.InvalidFormatException;
 
+import javax.print.attribute.standard.Copies;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 
 public class Engine {
-    private Vector<Doc> docs = new Vector<>();
+    public Vector<Doc> docs = new Vector<>();
 
     public int loadDocs(String dirname) throws FileNotFoundException {
         File dir = new File(dirname);
@@ -19,7 +20,8 @@ public class Engine {
         {
             try {
                 docs.add(new Doc(file.getPath()));
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException e)
+            {
                 e.printStackTrace();
             }
         }
@@ -59,10 +61,7 @@ public class Engine {
     {
         StringBuilder html = new StringBuilder();
 
-        html.append(results.get(0).htmlHighlight());
-
-        for (int i = 1; i < results.size(); i++) {
-            html.append("\n");
+        for (int i = 0; i < results.size(); i++) {
             html.append(results.get(i).htmlHighlight());
         }
 

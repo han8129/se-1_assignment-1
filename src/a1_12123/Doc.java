@@ -1,18 +1,15 @@
 package engine;
 
-import com.sun.media.sound.InvalidFormatException;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.InvalidObjectException;
-import java.nio.channels.FileLockInterruptionException;
 import java.util.*;
 
 public class Doc extends File {
-       private List<Word> title;
-       private List<Word> body;
-
+       public List<Word> title;
+       public List<Word> body;
+       public List getbody(){
+              return body;
+       }
        public Doc(String name) throws FileNotFoundException
        {
               super(name);

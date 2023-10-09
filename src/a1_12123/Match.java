@@ -30,12 +30,12 @@ public class Match implements Comparable<Match>
 
        @Override
        public int compareTo(Match o) {
-              if (o.getFirstIndex() > firstIndex)
+              if (firstIndex < o.getFirstIndex())
               {
                      return -1;
               }
 
-              if ( o.getFirstIndex() < firstIndex )
+              if (firstIndex > o.getFirstIndex())
               {
                      return 1;
               }

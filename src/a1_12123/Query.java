@@ -37,14 +37,14 @@ public class Query {
 
               for (Word keyword : keywords )
               {
-                     int freq = 0;
+                     Integer freq = 0;
                      Integer firstIndex = -1;
 
                      for (Word word : d.getTitle() )
                      {
                             if ( keyword.equals(word) )
                             {
-                                   if (freq == 0)
+                                   if (0 == freq)
                                    {
                                           try {
 
@@ -63,7 +63,7 @@ public class Query {
                      {
                             if (keyword.equals(word))
                             {
-                                   if (freq == 0)
+                                   if (0 == freq)
                                    {
                                           try {
                                                  firstIndex = word.getIndex();
@@ -87,13 +87,6 @@ public class Query {
               {
                      matches.sort( Comparator.naturalOrder() );
               }
-
-//              if (matches.size() > 0)
-//                     System.out.print("Matches: ");
-//              for (Match match : matches)
-//              {
-//                     System.out.println(match.toString());
-//              }
 
               return matches;
        }

@@ -18,14 +18,14 @@ public class Result implements Comparable<Result> {
               this.matches = matches;
        }
 
-       public List<Match>  getMatches()
+       public List<Match> getMatches()
        {
               return new ArrayList<>(matches);
        }
 
        public double getAverageFirstIndex()
        {
-              int sum = 0;
+              Integer sum = 0;
               for (Match match : matches ) {
                      sum += match.getFirstIndex();
               }
@@ -35,7 +35,7 @@ public class Result implements Comparable<Result> {
 
        public int getTotalFrequency()
        {
-              int sum = 0;
+              Integer sum = 0;
               for (Match match : matches ) {
                      sum += match.getFreq();
               }
@@ -48,7 +48,7 @@ public class Result implements Comparable<Result> {
               StringBuilder html = new StringBuilder();
               (html).append("<h3>" + htmlHighlight(doc.getTitle(), "u") + "</h3>");
               html.append("<p>" + htmlHighlight(doc.getBody(), "b") + "</p>");
-
+              // System.out.println(html);
               return html.toString();
        }
 
@@ -64,7 +64,7 @@ public class Result implements Comparable<Result> {
                      {
                             if (word.equals(match.getWord()))
                             {
-                                   html.append(word.htmlHighlight("u"));
+                                   html.append(word.htmlHighlight(htmlTag));
                                    found = true;
                                    break;
                             }
@@ -72,11 +72,13 @@ public class Result implements Comparable<Result> {
 
                      if(! found )
                      {
-                            html.append( word.toString());
+                            html.append(word.toString());
                      }
               }
 
               for (int i = 1; i < matchAgainst.size(); i++ ) {
+                     html.append(" ");
+
                      boolean found = false;
                      Word word = matchAgainst.get(i);
 
@@ -84,7 +86,7 @@ public class Result implements Comparable<Result> {
                      {
                             if (word.equals(match.getWord()))
                             {
-                                   html.append(word.htmlHighlight("u"));
+                                   html.append(word.htmlHighlight(htmlTag));
                                    found = true;
                                    break;
                             }
@@ -92,7 +94,7 @@ public class Result implements Comparable<Result> {
 
                      if( ! found )
                      {
-                            html.append(" " + word.toString());
+                            html.append(word.toString());
                      }
               }
 
